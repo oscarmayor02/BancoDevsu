@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: cuenta-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cuentadb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guess
+    password: guess
+
+server:
+  port: 8082
+
+cliente:
+  service:
+    url: http://localhost:8081
+
+logging:
+  level:
+    com.banco.cuenta: DEBUG
+    org.springframework.web: DEBUG

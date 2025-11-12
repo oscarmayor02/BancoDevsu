@@ -1,0 +1,118 @@
+services:
+  # Base de datos PostgreSQL para Cliente
+  postgres-cliente:
+    image: postgres:15-alpine
+    container_name: postgres-cliente
+    environment:
+      POSTGRES_DB: clientedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - cliente-data:/var/lib/postgresql/data
+    networks:
+      - banco-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clientedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Base de datos PostgreSQL para Cuenta
+  postgres-cuenta:
+    image: postgres:15-alpine
+    container_name: postgres-cuenta
+    environment:
+      POSTGRES_DB: cuentadb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+    volumes:
+      - cuenta-data:/var/lib/postgresql/data
+    networks:
+      - banco-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cuentadb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ para comunicación asíncrona
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guess
+      RABBITMQ_DEFAULT_PASS: guess
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - banco-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Microservicio Cliente-Persona
+  cliente-service:
+    build:
+      context: ./cliente-service
+      dockerfile: Dockerfile
+    container_name: cliente-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cliente:5432/clientedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      postgres-cliente:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - banco-network
+    restart: on-failure
+
+  # Microservicio Cuenta-Movimientos
+  cuenta-service:
+    build:
+      context: ./cuentas-service
+      dockerfile: Dockerfile
+    container_name: cuenta-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cuenta:5432/cuentadb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq
+      CLIENTE_SERVICE_URL: http://cliente-service:8081
+    depends_on:
+      postgres-cuenta:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      cliente-service:
+        condition: service_started
+    networks:
+      - banco-network
+    restart: on-failure
+
+networks:
+  banco-network:
+    driver: bridge
+
+volumes:
+  cliente-data:
+  cuenta-data:
+  rabbitmq-data:

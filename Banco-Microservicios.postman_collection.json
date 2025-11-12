@@ -1,0 +1,246 @@
+{
+	"info": {
+		"name": "Banco Microservicios API",
+		"description": "Colección de endpoints para los microservicios Cliente y Cuenta",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cliente Service",
+			"item": [
+				{
+					"name": "Crear Cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Jose Lema\",\n  \"genero\": \"Masculino\",\n  \"edad\": 30,\n  \"direccion\": \"Otavalo sn y principal\",\n  \"telefono\": \"098254785\",\n  \"clienteId\": \"jose123\",\n  \"contrasena\": \"1234\",\n  \"estado\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "clientes"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Cliente por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/jose123",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "clientes", "jose123"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Todos los Clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "clientes"]
+						}
+					}
+				},
+				{
+					"name": "Actualizar Cliente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Jose Lema Actualizado\",\n  \"genero\": \"Masculino\",\n  \"edad\": 31,\n  \"direccion\": \"Otavalo sn y principal\",\n  \"telefono\": \"098254785\",\n  \"clienteId\": \"jose123\",\n  \"contrasena\": \"1234\",\n  \"estado\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/jose123",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "clientes", "jose123"]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/jose123",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "clientes", "jose123"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Cuenta Service",
+			"item": [
+				{
+					"name": "Crear Cuenta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCuenta\": \"478758\",\n  \"tipo\": \"Ahorros\",\n  \"saldoInicial\": 2000,\n  \"estado\": true,\n  \"clienteId\": \"jose123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/cuentas",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "cuentas"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Cuenta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/api/cuentas/478758",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "cuentas", "478758"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Cuentas por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/api/cuentas/cliente/jose123",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "cuentas", "cliente", "jose123"]
+						}
+					}
+				},
+				{
+					"name": "Registrar Movimiento - Retiro",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCuenta\": \"478758\",\n  \"movimiento\": -575\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/movimientos",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "movimientos"]
+						}
+					}
+				},
+				{
+					"name": "Registrar Movimiento - Deposito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCuenta\": \"225487\",\n  \"movimiento\": 600\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/movimientos",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "movimientos"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Movimientos por Cuenta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/api/movimientos/cuenta/478758",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "movimientos", "cuenta", "478758"]
+						}
+					}
+				},
+				{
+					"name": "Reporte de Movimientos (F4)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/api/reportes?fechaInicio=2022-02-01&fechaFin=2022-02-28&cliente=marianela456",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["api", "reportes"],
+							"query": [
+								{
+									"key": "fechaInicio",
+									"value": "2022-02-01"
+								},
+								{
+									"key": "fechaFin",
+									"value": "2022-02-28"
+								},
+								{
+									"key": "cliente",
+									"value": "marianela456"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
