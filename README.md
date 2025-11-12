@@ -53,12 +53,13 @@ Sistema bancario implementado con arquitectura de microservicios que gestiona:
 - **Docker & Docker Compose**
 - **Maven**
 - **JUnit 5 & Mockito** (Pruebas unitarias)
+- **Karate DSL 1.4.1** (Pruebas de integración)
 - **Lombok**
 
 ## 📁 Estructura del Proyecto
 
 ```
-proyecto-banco/
+BancoDevsu/
 ├── cliente-service/
 │   ├── src/
 │   │   ├── main/
@@ -114,7 +115,7 @@ proyecto-banco/
 
 ```bash
 git clone https://github.com/oscarmayor02/BancoDevsu.git
-cd proyecto-banco
+cd BancoDevsu
 ```
 
 ### Paso 2: Levantar los Servicios con Docker
@@ -152,10 +153,10 @@ Deberías ver:
 
 ```bash
 # Para cliente database
-docker exec -i postgres-cliente psql -U admin -d clientedb < BaseDatos.sql
+docker exec -i postgres-cliente psql -U postgres -d clientedb < BaseDatos.sql
 
 # Para cuenta database
-docker exec -i postgres-cuenta psql -U admin -d cuentadb < BaseDatos.sql
+docker exec -i postgres-cuenta psql -U postgres -d cuentadb < BaseDatos.sql
 ```
 
 ### Esquema de Base de Datos
@@ -170,17 +171,51 @@ docker exec -i postgres-cuenta psql -U admin -d cuentadb < BaseDatos.sql
 
 ## 🧪 Pruebas
 
-### Ejecutar Pruebas Unitarias
+### Ejecutar Pruebas Unitarias (F5)
 
 ```bash
 # Cliente Service
 cd cliente-service
-mvn test
+mvn test -Dtest=ClienteServiceTest
 
 # Cuenta Service
-cd cuenta-service
+cd cuentas-service
+mvn test -Dtest=MovimientoServiceTest
+```
+
+### Ejecutar Pruebas de Integración con Karate (F6)
+
+```bash
+# Asegúrate de que los servicios estén corriendo
+docker-compose up -d
+
+# Espera 30 segundos para que todo inicie
+timeout /t 30
+
+# Pruebas de integración - Cliente Service
+cd cliente-service
+mvn test -Dtest=ClienteKarateTest
+
+# Pruebas de integración - Cuenta Service
+cd cuentas-service
+mvn test -Dtest=CuentaKarateTest
+
+# Ejecutar TODAS las pruebas (unitarias + integración)
+cd cliente-service
+mvn test
+
+cd cuentas-service
 mvn test
 ```
+
+### Ver Reportes de Karate
+
+Después de ejecutar las pruebas de Karate, se genera un reporte HTML en:
+```
+target/karate-reports/karate-summary.html
+```
+
+Abre el archivo en tu navegador para ver los resultados detallados.
 
 ### Pruebas con Postman
 
@@ -233,8 +268,8 @@ POST /api/clientes
 
 ### 2. Crear Cuentas
 POST /api/cuentas
-```json
 
+```json
 {
   "numeroCuenta": "478758",
   "tipo": "Ahorros",
@@ -245,10 +280,9 @@ POST /api/cuentas
 ```
 
 ### 3. Registrar Movimientos
-
-
 POST /api/movimientos
 ```json
+
 {
   "numeroCuenta": "478758",
   "movimiento": -575
@@ -266,13 +300,13 @@ GET /api/reportes?fechaInicio=2025-02-01&fechaFin=2025-02-28&cliente=jose123
 [
   {
     "fecha": "10/02/2025 10:00:00",
-    "cliente": "Jose Lema Actualizado",
+    "cliente": "Jose Lema",
     "numeroCuenta": "478758",
-    "tipo": "Ahorros",
-    "saldoInicial": 850.00,
+    "tipo": "Ahorro",
+    "saldoInicial": 100,
     "estado": true,
-    "movimiento": 600.00,
-    "saldoDisponible": 1450.00
+    "movimiento": 600,
+    "saldoDisponible": 700
   }
 ]
 ```
@@ -286,10 +320,19 @@ Las configuraciones están en `application.yml` de cada servicio y pueden ser so
 ```yaml
 # Cliente Service
 SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-cliente:5432/clientedb
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=root
 SPRING_RABBITMQ_HOST=rabbitmq
+SPRING_RABBITMQ_USERNAME=guess
+SPRING_RABBITMQ_PASSWORD=guess
 
 # Cuenta Service
 SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-cuenta:5432/cuentadb
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=root
+SPRING_RABBITMQ_HOST=rabbitmq
+SPRING_RABBITMQ_USERNAME=guess
+SPRING_RABBITMQ_PASSWORD=guess
 CLIENTE_SERVICE_URL=http://cliente-service:8081
 ```
 
@@ -315,14 +358,14 @@ docker network inspect proyecto-banco_banco-network
 ### Base de datos no se conecta
 
 ```bash
- # Verificar salud de PostgreSQL
+# Verificar salud de PostgreSQL
 docker exec postgres-cliente pg_isready -U admin
 ```
 
 ## 📦 Detener y Limpiar
 
 ```bash
-  # Detener servicios
+# Detener servicios
 docker-compose down
 
 # Detener y eliminar volúmenes
@@ -342,7 +385,47 @@ docker-compose down -v --rmi all
 - ✅ Herencia JPA (Persona → Cliente)
 - ✅ Transacciones con `@Transactional`
 - ✅ Clean Architecture con DTOs
-- ✅ Pruebas unitarias con Mockito
+- ✅ Pruebas unitarias con JUnit 5 y Mockito (F5)
+- ✅ Pruebas de integración con Karate DSL (F6)
+- ✅ Reportes HTML de pruebas automatizadas
+
+## 🧪 Cobertura de Pruebas
+
+### Pruebas Unitarias (F5)
+- **ClienteServiceTest**: 6 escenarios de prueba
+    - Crear cliente exitosamente
+    - Cliente duplicado
+    - Obtener cliente por ID
+    - Cliente no encontrado
+    - Actualizar cliente
+    - Eliminar cliente
+
+- **MovimientoServiceTest**: 4 escenarios de prueba
+    - Registrar retiro exitoso
+    - Registrar depósito exitoso
+    - Validación de saldo insuficiente
+    - Cuenta no existe
+
+### Pruebas de Integración con Karate (F6)
+
+#### Cliente Service
+- ✅ Crear cliente exitosamente
+- ✅ Obtener todos los clientes
+- ✅ Flujo completo CRUD (Crear, Obtener, Actualizar, Eliminar)
+- ✅ Validar cliente duplicado
+- ✅ Buscar cliente inexistente
+
+#### Cuenta Service
+- ✅ Crear cuenta exitosamente
+- ✅ Obtener todas las cuentas
+- ✅ Flujo completo con movimientos (Depósito y Retiro)
+- ✅ Validar saldo insuficiente
+- ✅ Casos de uso del documento (4 movimientos específicos)
+- ✅ Reporte de movimientos por fechas y cliente (F4)
+- ✅ Obtener cuentas por cliente
+- ✅ Validar cliente inexistente
+
+**Total**: 15+ escenarios de pruebas automatizadas end-to-end
 
 ## 👤 Autor
 

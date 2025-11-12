@@ -1,10 +1,9 @@
-package org.clienteservice;
+package org.clienteservice.service;
 import org.clienteservice.dto.ClienteDTO;
 import org.clienteservice.entity.Cliente;
 import org.clienteservice.exception.ClienteNotFoundException;
 import org.clienteservice.exception.DuplicateClienteException;
 import org.clienteservice.repository.ClienteRepository;
-import org.clienteservice.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

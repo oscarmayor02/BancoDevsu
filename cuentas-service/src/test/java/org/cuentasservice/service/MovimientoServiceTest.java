@@ -1,4 +1,4 @@
-package org.cuentasservice;
+package org.cuentasservice.service;
 import org.cuentasservice.dto.MovimientoDTO;
 import org.cuentasservice.entity.Cuenta;
 import org.cuentasservice.entity.Movimiento;
@@ -6,8 +6,6 @@ import org.cuentasservice.exception.CuentaNotFoundException;
 import org.cuentasservice.exception.SaldoInsuficienteException;
 import org.cuentasservice.repository.CuentaRepository;
 import org.cuentasservice.repository.MovimientoRepository;
-import org.cuentasservice.service.ClienteClientService;
-import org.cuentasservice.service.MovimientoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
