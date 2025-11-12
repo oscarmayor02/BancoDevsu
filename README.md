@@ -113,7 +113,7 @@ proyecto-banco/
 ### Paso 1: Clonar el Repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/oscarmayor02/BancoDevsu.git
 cd proyecto-banco
 ```
 
@@ -144,7 +144,7 @@ Deberías ver:
 
 - **Cliente API**: http://localhost:8081/api/clientes
 - **Cuenta API**: http://localhost:8082/api/cuentas
-- **RabbitMQ Management**: http://localhost:15672 (guest/guest)
+- **RabbitMQ Management**: http://localhost:15672 (guess/guess)
 
 ## 📊 Base de Datos
 
@@ -258,7 +258,7 @@ POST /api/movimientos
 ### 4. Generar Reporte (F4)
 
 ```
-GET /api/reportes?fechaInicio=2025-02-01&fechaFin=2025-02-28&cliente=marianela456
+GET /api/reportes?fechaInicio=2025-02-01&fechaFin=2025-02-28&cliente=jose123
 ```
 
 **Respuesta JSON:**
@@ -266,13 +266,13 @@ GET /api/reportes?fechaInicio=2025-02-01&fechaFin=2025-02-28&cliente=marianela45
 [
   {
     "fecha": "10/02/2025 10:00:00",
-    "cliente": "Marianela Montalvo",
-    "numeroCuenta": "225487",
-    "tipo": "Corriente",
-    "saldoInicial": 100,
+    "cliente": "Jose Lema Actualizado",
+    "numeroCuenta": "478758",
+    "tipo": "Ahorros",
+    "saldoInicial": 850.00,
     "estado": true,
-    "movimiento": 600,
-    "saldoDisponible": 700
+    "movimiento": 600.00,
+    "saldoDisponible": 1450.00
   }
 ]
 ```
@@ -346,8 +346,8 @@ docker-compose down -v --rmi all
 
 ## 👤 Autor
 
-Desarrollado por: [Tu Nombre]
-Fecha: Noviembre 2024
+Desarrollado por: Oscar Eduardo Mayor Jaramillo
+Fecha: Noviembre 2025
 
 ## 📄 Licencia
 
